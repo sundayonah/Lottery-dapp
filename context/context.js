@@ -63,6 +63,8 @@ export const AppProvider = ({ children }) => {
             setLotteryId(await lotteryContract.methods.lotteryId().call())
             setLotteryPlayers(await lotteryContract.methods.getPlayers().call())
             setLastWinner(await lotteryContract.methods.getWinners().call())
+            const owner = await lotteryContract.methods.owner().call()
+            console.log(owner)
             console.log([...lastWinner], "last winner")
         }
     }
@@ -70,12 +72,11 @@ export const AppProvider = ({ children }) => {
     //Pick Winner
     const pickWinner = async () => {
         try {
-            let tx = await lotteryContract.methods.pickWinner().call().send({
+            let transaction = await lotteryContract.methods.pickWinner().send({
                 from: address,
                 gas: 300000,
                 gasPrice: null,
             })
-            console.log(tx)
             updateLottery()
         } catch (error) {
             console.log(error)

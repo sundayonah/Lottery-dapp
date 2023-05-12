@@ -22,7 +22,7 @@ const LotteryCard = () => {
             ) : (
                 <div className={style.winner}>
                     {/* TODO: Dynamically render the last winner */}
-                    {truncateEthAddress("0x766tw8989w5t34562y235y459")}
+                    {truncateEthAddress(lastWinner)}
                 </div>
             )}
 
