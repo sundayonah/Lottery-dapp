@@ -63,8 +63,8 @@ export const AppProvider = ({ children }) => {
             setLotteryId(await lotteryContract.methods.lotteryId().call())
             setLotteryPlayers(await lotteryContract.methods.getPlayers().call())
             setLastWinner(await lotteryContract.methods.getWinners().call())
-            const owner = await lotteryContract.methods.owner().call()
-            console.log(owner)
+            // const owner = await lotteryContract.methods.owner().call()
+            // console.log(owner)
             console.log([...lastWinner], "last winner")
         }
     }
@@ -93,6 +93,7 @@ export const AppProvider = ({ children }) => {
                 lotteryPot,
                 lotteryPlayers,
                 pickWinner,
+                lotteryId,
             }}
         >
             {children}
