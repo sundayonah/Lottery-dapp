@@ -42,7 +42,7 @@ export const AppProvider = ({ children }) => {
         try {
             await lotteryContract.methods.enter().send({
                 from: address,
-                value: web3.utils.toWei("0.01", "ether"),
+                value: web3.utils.toWei("0.1", "ether"),
                 gas: 300000,
                 gasPrice: null,
             })
@@ -60,11 +60,16 @@ export const AppProvider = ({ children }) => {
         if (lotteryContract) {
             const pot = await lotteryContract.methods.getBalance().call()
             setLotteryPot(web3.utils.fromWei(pot, "ether"))
+            setLotteryId(await lotteryContract.methods.lotteryId().call())
+            setLotteryPlayers(await lotteryContract.methods.getPlayers().call())
+            // console.log(lotteryPlayers)
         }
     }
 
     return (
-        <appContext.Provider value={{ connectWallet, address, enterLottery, lotteryPot }}>
+        <appContext.Provider
+            value={{ connectWallet, address, enterLottery, lotteryPot, lotteryPlayers }}
+        >
             {children}
         </appContext.Provider>
     )
