@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
     const [address, setAddress] = useState("")
     const [web3, setWeb3] = useState("")
     const [lotteryContract, setLotteryContract] = useState()
-    const [lotteryPot, setLotteryPot] = useState()
+    const [lotteryPot, setLotteryPot] = useState("0 ETH")
     const [lotteryPlayers, setLotteryPlayers] = useState([])
     const [lastWinner, setLastWinner] = useState()
     const [lotteryId, setLotteryId] = useState()
@@ -42,7 +42,7 @@ export const AppProvider = ({ children }) => {
         try {
             await lotteryContract.methods.enter().send({
                 from: address,
-                value: web3.utils.toWei("0.1", "ether"),
+                value: web3.utils.toWei("0.01", "ether"),
                 gas: 300000,
                 gasPrice: null,
             })
@@ -51,8 +51,20 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    //Update the Lottery Card dynamically using our contract.
+    useEffect(() => {
+        updateLottery()
+    }, [lotteryContract])
+
+    const updateLottery = async () => {
+        if (lotteryContract) {
+            const pot = await lotteryContract.methods.getBalance().call()
+            setLotteryPot(web3.utils.fromWei(pot, "ether"))
+        }
+    }
+
     return (
-        <appContext.Provider value={{ connectWallet, address, enterLottery }}>
+        <appContext.Provider value={{ connectWallet, address, enterLottery, lotteryPot }}>
             {children}
         </appContext.Provider>
     )

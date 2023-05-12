@@ -10,6 +10,7 @@ export default function Home() {
             {/* TODO: LotteryCard */}
             <LotteryCard />
             {/* TODO: Players Table */}
+            <Table />
         </div>
     )
 }
