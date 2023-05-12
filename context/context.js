@@ -8,21 +8,25 @@ export const AppProvider = ({ children }) => {
     const [address, setAddress] = useState("")
     const [web3, setWeb3] = useState("")
     const [lotteryContract, setLotteryContract] = useState()
+    const [lotteryPot, setLotteryPot] = useState()
+    const [lotteryPlayers, setLotteryPlayers] = useState([])
+    const [lastWinner, setLastWinner] = useState()
+    const [lotteryId, setLotteryId] = useState()
 
     const connectWallet = async () => {
         if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
             try {
-                //request wallet connection
-                await window.ethereum.request({ method: "eth_requestAccoounts" })
-                //Create a web3 instance
+                // Request wallet connection
+                await window.ethereum.request({ method: "eth_requestAccounts" })
+                // Create a web3 instance
                 const web3 = new Web3(window.ethereum)
                 setWeb3(web3)
-                const accounts = await web3.getAccount()
+                const accounts = await window.ethereum.request({ method: "eth_accounts" })
                 setAddress(accounts[0])
                 setLotteryContract(createLotteryContract(web3))
 
                 window.ethereum.on("accountsChanged", async () => {
-                    const accounts = await web3.eth.getAccounts()
+                    const accounts = await window.ethereum.request({ method: "eth_accounts" })
                     setAddress(accounts[0])
                 })
             } catch (error) {
@@ -33,7 +37,25 @@ export const AppProvider = ({ children }) => {
         }
     }
 
-    return <appContext.Provider value={{ connectWallet, address }}>{children}</appContext.Provider>
+    //EnterLOttery
+    const enterLottery = async () => {
+        try {
+            await lotteryContract.methods.enter().send({
+                from: address,
+                value: web3.utils.toWei("0.1", "ether"),
+                gas: 300000,
+                gasPrice: null,
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+        <appContext.Provider value={{ connectWallet, address, enterLottery }}>
+            {children}
+        </appContext.Provider>
+    )
 }
 
 export const useAppContext = () => {
