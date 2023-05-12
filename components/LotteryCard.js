@@ -3,7 +3,7 @@ import style from "../styles/PotCard.module.css"
 import truncateEthAddress from "truncate-eth-address"
 const LotteryCard = () => {
     // TODO: Get the data needed from context
-    const { enterLottery, address, lotteryPot } = useAppContext()
+    const { enterLottery, address, lotteryPot, pickWinner, lastWinner } = useAppContext()
 
     return (
         <div className={style.wrapper}>
@@ -17,15 +17,22 @@ const LotteryCard = () => {
             </div>
 
             <div className={style.recentWinnerTitle}>🏆Last Winners🏆</div>
-            <div className={style.winner}>
-                {/* TODO: Dynamically render the last winner */}
-                {truncateEthAddress("0x1234567890123456789012345678901234567890")}
-            </div>
+            {!lastWinner.length ? (
+                <div className={style.winner}>No Winner Yet!</div>
+            ) : (
+                <div className={style.winner}>
+                    {/* TODO: Dynamically render the last winner */}
+                    {truncateEthAddress("0x766tw8989w5t34562y235y459")}
+                </div>
+            )}
+
             {/* TODO: Add onClick functionality to the buttons */}
             <div className={style.btn} onClick={enterLottery}>
                 Enter
             </div>
-            <div className={style.btn}>Pick Winner!</div>
+            <div className={style.btn} onClick={pickWinner}>
+                Pick Winner!
+            </div>
         </div>
     )
 }

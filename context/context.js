@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
     const [lotteryContract, setLotteryContract] = useState()
     const [lotteryPot, setLotteryPot] = useState("0 ETH")
     const [lotteryPlayers, setLotteryPlayers] = useState([])
-    const [lastWinner, setLastWinner] = useState()
+    const [lastWinner, setLastWinner] = useState([])
     const [lotteryId, setLotteryId] = useState()
 
     const connectWallet = async () => {
@@ -62,13 +62,37 @@ export const AppProvider = ({ children }) => {
             setLotteryPot(web3.utils.fromWei(pot, "ether"))
             setLotteryId(await lotteryContract.methods.lotteryId().call())
             setLotteryPlayers(await lotteryContract.methods.getPlayers().call())
-            // console.log(lotteryPlayers)
+            setLastWinner(await lotteryContract.methods.getWinners().call())
+            console.log([...lastWinner], "last winner")
+        }
+    }
+
+    //Pick Winner
+    const pickWinner = async () => {
+        try {
+            let tx = await lotteryContract.methods.pickWinner().call().send({
+                from: address,
+                gas: 300000,
+                gasPrice: null,
+            })
+            console.log(tx)
+            updateLottery()
+        } catch (error) {
+            console.log(error)
         }
     }
 
     return (
         <appContext.Provider
-            value={{ connectWallet, address, enterLottery, lotteryPot, lotteryPlayers }}
+            value={{
+                connectWallet,
+                lastWinner,
+                address,
+                enterLottery,
+                lotteryPot,
+                lotteryPlayers,
+                pickWinner,
+            }}
         >
             {children}
         </appContext.Provider>
